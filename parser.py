@@ -1,28 +1,37 @@
 # handles the parsing of the vm code
 
-COMMAND_TYPES = \
+
+ARITHMETIC_COMMANDS = \
     {
-        "arithmetics" : "C_ARITHMETIC"
-        "push" : "C_PUSH"
-        "pop" : "C_POP"
-        "lable" : "C_LABLE"
-        "goto" : "C_GOTO"
-        "if" : "C_IF"
-        "function" : "C_FUNCTION"
-        "return" : "C_RETURN"
-        "call" : "C_CALL"
+
     }
+
+
+ARITHMETICS = "ARITHMETICS"
+C_PUSH = "C_PUSH"
+pop : "C_POP"
+"label" : "C_LABEL"
+"goto" : "C_GOTO"
+"if" : "C_IF"
+"function" : "C_FUNCTION"
+"return" : "C_RETURN"
+"call" : "C_CALL"
+
+
+
+ARITHMETICS =  "C_ARITHMETIC"
+
 ARITHMETICS = \
     {
-        "add" : "add"
-        "sub" : "sub"
-        "neg" : "neg"
-        "eq" : "eq"
-        "gt" : "gt"
-        "lt" : "lt"
-        "and" : "and"
-        "or" : "or"
-        "not" : "not"
+        "add" : "add",
+        "sub" : "sub",
+        "neg" : "neg",
+        "eq" : "eq",
+        "gt" : "gt",
+        "lt" : "lt",
+        "and" : "and",
+        "or" : "or",
+        "not" : "not",
     }
 class Parser:
     """
@@ -39,11 +48,9 @@ class Parser:
         :return:
         """
         line = "".join(line.split())
-        if line[0]=="/":
-            return False
-        return True
+        return not line[0]=="/"
 
-def parse(self, line):
+    def parse(self, line):
         """
         Assume the input is valid
         :return: parsed version of curline
@@ -51,12 +58,12 @@ def parse(self, line):
 
         if self.is_command(line):
             splited = line.split()
-            if splites[0] in ARITHMETICS:
-                return line, COMMAND_TYPES("arithmetics"), ARITHMETIC(splited[0]), None
+            if splited[0] in ARITHMETICS:
+                return line, COMMAND_TYPES["arithmetics"], ARITHMETICS[splited[0]], None
             elif splited[0]=="push" or splited[0]=="pop":
-                return line, COMMAND_TYPES(splited[0]), splited[1], splited[2]
-        else
-            return None
+                return ParsedLine(line, COMMAND_TYPES(splited[0]), splited[1], splited[2])
+        else:
+            raise ValueError()
 
 class ParsedLine:
     def __init__(self, original, command_type, arg1, arg2):
