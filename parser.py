@@ -1,34 +1,73 @@
 # handles the parsing of the vm code
 
+COMMAND_TYPES = \
+    {
+        "arithmetics" : "C_ARITHMETIC"
+        "push" : "C_PUSH"
+        "pop" : "C_POP"
+        "lable" : "C_LABLE"
+        "goto" : "C_GOTO"
+        "if" : "C_IF"
+        "function" : "C_FUNCTION"
+        "return" : "C_RETURN"
+        "call" : "C_CALL"
+    }
+ARITHMETICS = \
+    {
+        "add" : "add"
+        "sub" : "sub"
+        "neg" : "neg"
+        "eq" : "eq"
+        "gt" : "gt"
+        "lt" : "lt"
+        "and" : "and"
+        "or" : "or"
+        "not" : "not"
+    }
 class Parser:
     """
-    Static class
+    Static class, knows how to parse a given string
     """
     def __init__(self):
-    """
-    """
         pass
 
 
     def is_command(self, line):
         """
-
-        :param line:
+        Assume the input is valid
+        :param line: string represents 1 line
         :return:
         """
-        pass
+        line = "".join(line.split())
+        if line[0]=="/":
+            return False
+        return True
 
-
-
-    def parse(self, line):
+def parse(self, line):
         """
-
+        Assume the input is valid
         :return: parsed version of curline
         """
 
+        if self.is_command(line):
+            splited = line.split()
+            if splites[0] in ARITHMETICS:
+                return line, COMMAND_TYPES("arithmetics"), ARITHMETIC(splited[0]), None
+            elif splited[0]=="push" or splited[0]=="pop":
+                return line, COMMAND_TYPES(splited[0]), splited[1], splited[2]
+        else
+            return None
+
 class ParsedLine:
-    def __init__(self, command_type, original, arg1, arg2):
-        self.command_type = command_type
+    def __init__(self, original, command_type, arg1, arg2):
+        """
+
+        :param original: the original line (a string)
+        :param command_type:
+        :param arg1:
+        :param arg2:
+        """
         self.original = original
+        self.command_type = command_type
         self.arg1 = arg1
         self.arg2 = arg2
