@@ -35,6 +35,11 @@ def translate_file(path, destination_path, parser, translator):
 
 
 def main(input_path):
+    """
+    drives the process
+    :param input_path: the input path
+    :return: nothing. Output file will be constructed
+    """
     paths, destination_path = get_input_and_destination_paths(input_path)
     parser = Parser()
     translator = Translator()

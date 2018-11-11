@@ -1,4 +1,5 @@
-# handles the parsing of the vm code
+
+#  CONSTANTS:
 
 ADD = "ADD"
 SUB = "SUB"
@@ -9,6 +10,18 @@ LT = "LT"
 AND = "AND"
 OR = "OR"
 NOT = "NOT"
+
+PUSH_COMMAND = "PUSH_COMMAND"
+POP_COMMAND = "POP_COMMAND"
+ARITHMETIC_COMMAND = "ARITHMETIC_COMMAND"
+C_LABEL = "C_LABEL"
+C_GOTO = "C_GOTO"
+C_IF = "C_IF"
+C_FUNCTION = "C_FUNCTION"
+C_RETURN = "C_RETURN"
+C_CALL = "C_CALL"
+
+
 ARITHMETIC_COMMANDS = \
     {
         "add": ADD,
@@ -22,57 +35,60 @@ ARITHMETIC_COMMANDS = \
         "not": NOT
     }
 
-
-PUSH_COMMAND = "push"
-POP_COMMAND = "pop"
-ARITHMETIC_COMMAND = "ARITHMETIC_COMMAND"
-
+MEMORY_ACCESS_COMMANDS = \
+    {
+        "push" : PUSH_COMMAND,
+        "pop" : POP_COMMAND,
+    }
 
 
 class Parser:
     """
-    Static class, knows how to parse a given string
+    parses each VM command into its lexical elements
     """
     def __init__(self):
         pass
 
 
-    def is_command(self, line):
+    def is_a_comment(self, line):
         """
         Assume the input is valid
-        :param line: string represents 1 line
+        :param line: a line
         :return:
         """
-        line = "".join(line.split())
-        return not line[0]=="/"
+        line = "".join(line.split())  # clean white spaces
+        return line[0] == "//"
+
 
     def parse(self, line):
         """
         Assume the input is valid
         :return: parsed version of curline
         """
-
-        if self.is_command(line):
-            splitted = line.split()
-            if splitted[0] in ARITHMETIC_COMMANDS:
-                return ParsedLine(line, ARITHMETIC_COMMAND, ARITHMETIC_COMMANDS[splitted[0]], None)
-            elif splitted[0] == PUSH_COMMAND:
-                return ParsedLine(line, PUSH_COMMAND, splitted[1], splitted[2])
-            elif splitted[0] == POP_COMMAND:
-                return ParsedLine(line, POP_COMMAND, splitted[1], splitted[2])
+        splitted = line.split()
+        if len(splitted) == 0:
+            raise ValueError
+        command = splitted[0]
+        if command in ARITHMETIC_COMMANDS:
+            return ParsedLine(line, ARITHMETIC_COMMAND, ARITHMETIC_COMMANDS[command], None)
+        elif command in MEMORY_ACCESS_COMMANDS:
+            if len(splitted) != 3:
+                raise ValueError
+            return ParsedLine(line, MEMORY_ACCESS_COMMANDS[command], splitted[1], splitted[2])
         else:
             raise ValueError()
 
-class ParsedLine:
-    def __init__(self, original, command_type, arg1, arg2):
-        """
 
-        :param original: the original line (a string)
+class ParsedLine:
+    def __init__(self, original_line, command_type, arg1, arg2):
+        """
+        Represents a parsed line
+        :param original: the original line
         :param command_type:
         :param arg1:
         :param arg2:
         """
-        self.original = original
+        self.original_line = original_line
         self.command_type = command_type
         self.arg1 = arg1
         self.arg2 = arg2
