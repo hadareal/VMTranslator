@@ -10,16 +10,19 @@ THAT = "that"
 
 SEGMENT_POINTERS = \
     {
-        LOCAL: "R2",
-        ARGUMENT: "R3",
-        THIS: "R4",
-        THAT: "R5",
+        LOCAL: "LCL",
+        ARGUMENT: "ARG",
+        THIS: "THIS",
+        THAT: "THAT",
     }
 
 
-#  STRINGS:
+#  HACK_CODE:
 
-PUSH_CONSTANT_LINE = "D=A\n@SP\nA=M\nM=D\n@SP\nM=M+1"
+PUSH_CONSTANT = "D=A\n@SP\nA=M\nM=D\n@SP\nM=M+1"
+PUSH_SEGMENT_POINTER = "\nA=M\nA=D+A\nD=M\n@SP\nM=M+1\nA=M\nM=D"
+POP_SEGMENT_POINTER = ""
+#  TODO: finishing this
 
 
 class Translator:
@@ -65,17 +68,47 @@ class Translator:
         line = ""
         if segment == CONSTANT:
             line = "@"+index+"\n"
-            line += PUSH_CONSTANT_LINE
+            line += PUSH_CONSTANT+"\n"
         elif segment in SEGMENT_POINTERS:
-            #  addr = segment_pointer+index, *SP = *addr, SP++
-            line = "@"+SEGMENT_POINTERS[segment]+"\n"
-            line += ""
+            #addr = segment_pointer+index, SP++, *SP = *addr
+
+            #//push segment_pointer index
+            #@index
+            #D=A
+            #@segment_pointer
+            #A=M
+            #A=D+A
+            #D=M
+            #@SP
+            #(push D to stackd)
+            #M=M+1
+            #A=M
+            #M=D
+            line = "@"+index+"\nD=A\n@"+SEGMENT_POINTERS[segment]
+            line += PUSH_SEGMENT_POINTER+"\n"
         return line
 
 
     def translate_pop_command(self, parsed_line):
         segment = parsed_line.arg1
         index = parsed_line.arg2
+        line = ""
         if segment in SEGMENT_POINTERS:
             #  addr = segment_pointer+index, *addr = *SP, SP--
-            pass
+
+            #//pop segment_pointer index
+            #@index
+            #D=A
+            #@segment_pointer
+            #A=M
+            #A=D+A
+            #D=A
+            #@SP
+            #A=D
+            #D=M
+            #M=D
+            #@SP
+            #M=M-1
+            line = "@"+index+"\nD=A\n@"+SEGMENT_POINTERS[segment]
+            line += POP_SEGMENT_POINTER+"\n"
+        return line
