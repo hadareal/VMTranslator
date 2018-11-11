@@ -1,3 +1,6 @@
+import parser
+
+
 class Translator:
 
     def __init__(self):
@@ -15,10 +18,14 @@ class Translator:
 
 
     def translate_arithmetic_command(self, parsed_line):
-        pass
+        operator = parsed_line.arg1
+        if operator==parser.NOT or operator==parser.NEG:
+            pass
+
+
 
     def translate_push_command(self, parsed_line):
-        
+
 
     def translate_pop_command(self, parsed_line):
         pass

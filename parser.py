@@ -1,38 +1,34 @@
 # handles the parsing of the vm code
 
-
+ADD = "ADD"
+SUB = "SUB"
+NEG = "NEG"
+EQ = "EQ"
+GT = "GT"
+LT = "LT"
+AND = "AND"
+OR = "OR"
+NOT = "NOT"
 ARITHMETIC_COMMANDS = \
     {
-
+        "add": ADD,
+        "sub": SUB,
+        "neg": NEG,
+        "eq": EQ,
+        "gt": GT,
+        "lt": LT,
+        "and": AND,
+        "or": OR,
+        "not": NOT
     }
 
 
-ARITHMETICS = "ARITHMETICS"
-C_PUSH = "C_PUSH"
-pop : "C_POP"
-"label" : "C_LABEL"
-"goto" : "C_GOTO"
-"if" : "C_IF"
-"function" : "C_FUNCTION"
-"return" : "C_RETURN"
-"call" : "C_CALL"
+PUSH_COMMAND = "push"
+POP_COMMAND = "pop"
+ARITHMETIC_COMMAND = "ARITHMETIC_COMMAND"
 
 
 
-ARITHMETICS =  "C_ARITHMETIC"
-
-ARITHMETICS = \
-    {
-        "add" : "add",
-        "sub" : "sub",
-        "neg" : "neg",
-        "eq" : "eq",
-        "gt" : "gt",
-        "lt" : "lt",
-        "and" : "and",
-        "or" : "or",
-        "not" : "not",
-    }
 class Parser:
     """
     Static class, knows how to parse a given string
@@ -57,11 +53,13 @@ class Parser:
         """
 
         if self.is_command(line):
-            splited = line.split()
-            if splited[0] in ARITHMETICS:
-                return line, COMMAND_TYPES["arithmetics"], ARITHMETICS[splited[0]], None
-            elif splited[0]=="push" or splited[0]=="pop":
-                return ParsedLine(line, COMMAND_TYPES(splited[0]), splited[1], splited[2])
+            splitted = line.split()
+            if splitted[0] in ARITHMETIC_COMMANDS:
+                return ParsedLine(line, ARITHMETIC_COMMAND, ARITHMETIC_COMMANDS[splitted[0]], None)
+            elif splitted[0] == PUSH_COMMAND:
+                return ParsedLine(line, PUSH_COMMAND, splitted[1], splitted[2])
+            elif splitted[0] == POP_COMMAND:
+                return ParsedLine(line, POP_COMMAND, splitted[1], splitted[2])
         else:
             raise ValueError()
 
@@ -78,3 +76,12 @@ class ParsedLine:
         self.command_type = command_type
         self.arg1 = arg1
         self.arg2 = arg2
+
+    def is_arithmetic_command(self):
+        return self.command_type == ARITHMETIC_COMMAND
+
+    def is_push_command(self):
+        return self.command_type == PUSH_COMMAND
+
+    def is_pop_command(self):
+        return self.command_type == POP_COMMAND
