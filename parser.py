@@ -85,7 +85,7 @@ class ParsedLine:
         Represents a parsed line
         :param original: the original line
         :param command_type:
-        :param arg1:
+        :param arg1:n
         :param arg2:
         """
         self.original_line = original_line

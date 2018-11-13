@@ -50,15 +50,7 @@ class Translator:
         return assembly_command
 
 
-    def translate_arithmetic_command(self, parsed_line):
-        """
 
-        :param parsed_line:
-        :return:
-        """
-        operator = parsed_line.arg1
-        if operator == parser.NOT or operator == parser.NEG:
-            pass
 
 
     def translate_push_command(self, parsed_line):
@@ -112,3 +104,5 @@ class Translator:
             line = "@"+index+"\nD=A\n@"+SEGMENT_POINTERS[segment]
             line += POP_SEGMENT_POINTER+"\n"
         return line
+
+
