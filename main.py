@@ -1,7 +1,7 @@
 import sys
-from parser import Parser
+import parser
 import os
-from translator import Translator
+from codeWriter import CodeWriter
 
 
 INPUT_FILE_EXTENSION = ".vm"
@@ -15,22 +15,23 @@ def get_input_and_destination_paths(file_path):
         destination_path = os.path.abspath(file_path)
         for dir in os.listdir(file_path):
             if dir.endswith(INPUT_FILE_EXTENSION):
-                paths.append(os.path.abspath(dir))
+                paths.append(os.path.join(file_path, dir))
     else:
         paths.append(os.path.abspath(file_path))
         destination_path = os.path.abspath(os.path.join(file_path, os.pardir))
     return paths, destination_path
 
-def translate_file(path, destination_path, parser, translator):
+def translate_file(path, destination_path):
     write_path = os.path.join(destination_path,
                 '.'.join(os.path.basename(path).split('.')[:-1]) + OUTPUT_FILE_EXTENSION)
     with open(path) as reader, open(write_path, 'w') as writer:
-        line = reader.readline()
-        while line:
-            if parser.is_command(line):
-                translated_line = translator.translate((parser.parse(line)))
-                writer.write("%s\n" % translated_line)
-            line = reader.readline()
+        code_writer = CodeWriter(writer)
+        input_line = reader.readline()
+        while input_line:
+            if parser.is_command(input_line):
+                parsed_line = parser.parse(input_line)
+                code_writer.write_command(parsed_line)
+            input_line = reader.readline()
 
 
 
@@ -41,15 +42,13 @@ def main(input_path):
     :return: nothing. Output file will be constructed
     """
     paths, destination_path = get_input_and_destination_paths(input_path)
-    parser = Parser()
-    translator = Translator()
     for path in paths:
-        translate_file(path, destination_path, parser, translator)
+        translate_file(path, destination_path)
 
 
 
 if __name__ == "__main__":
-    if len(sys.argv != 2):
+    if len(sys.argv) != 2:
         raise ValueError(ILLEGAL_USAGE + '\n' + USAGE)
     if not os.path.isdir(sys.argv[1]):
         raise ValueError(ILLEGAL_USAGE + '\n' + USAGE)

@@ -42,42 +42,37 @@ MEMORY_ACCESS_COMMANDS = \
     }
 
 
-class Parser:
+
+def is_a_comment(line):
     """
-    parses each VM command into its lexical elements
+    Assume the input is valid
+    :param line: a line
+    :return:
     """
-    def __init__(self):
-        pass
+    line = "".join(line.split())  # clean white spaces
+    return line[0] == "//"
 
 
-    def is_a_comment(self, line):
-        """
-        Assume the input is valid
-        :param line: a line
-        :return:
-        """
-        line = "".join(line.split())  # clean white spaces
-        return line[0] == "//"
-
-
-    def parse(self, line):
-        """
-        Assume the input is valid
-        :return: parsed version of curline
-        """
-        splitted = line.split()
-        if len(splitted) == 0:
+def parse(line):
+    """
+    Assume the input is valid
+    :return: parsed version of curline
+    """
+    splitted = line.split()
+    if len(splitted) == 0:
+        raise ValueError
+    command = splitted[0]
+    if command in ARITHMETIC_COMMANDS:
+        return ParsedLine(line, ARITHMETIC_COMMAND, ARITHMETIC_COMMANDS[command], None)
+    elif command in MEMORY_ACCESS_COMMANDS:
+        if len(splitted) != 3:
             raise ValueError
-        command = splitted[0]
-        if command in ARITHMETIC_COMMANDS:
-            return ParsedLine(line, ARITHMETIC_COMMAND, ARITHMETIC_COMMANDS[command], None)
-        elif command in MEMORY_ACCESS_COMMANDS:
-            if len(splitted) != 3:
-                raise ValueError
-            return ParsedLine(line, MEMORY_ACCESS_COMMANDS[command], splitted[1], splitted[2])
-        else:
-            raise ValueError()
+        return ParsedLine(line, MEMORY_ACCESS_COMMANDS[command], splitted[1], splitted[2])
+    else:
+        raise ValueError()
 
+def is_command(line):
+    return line and not line.isspace() and not is_a_comment(line)
 
 class ParsedLine:
     def __init__(self, original_line, command_type, arg1, arg2):
