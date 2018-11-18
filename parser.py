@@ -1,6 +1,9 @@
 
 #  CONSTANTS:
 
+TEMP_START_INDEX = 5
+
+
 ADD = "ADD"
 SUB = "SUB"
 NEG = "NEG"
@@ -10,6 +13,25 @@ LT = "LT"
 AND = "AND"
 OR = "OR"
 NOT = "NOT"
+
+
+LOCAL = "local"
+ARGUMENT = "argument"
+THIS = "this"
+THAT = "that"
+TEMP = "temp"
+CONSTANT = "constant"
+POINTER = "pointer"
+STATIC = "static"
+
+
+SEGMENTS = \
+    {
+        LOCAL: "LCL",
+        ARGUMENT: "ARG",
+        THIS : "THIS",
+        THAT : "THAT",
+    }
 
 PUSH_COMMAND = "PUSH_COMMAND"
 POP_COMMAND = "POP_COMMAND"
@@ -50,7 +72,7 @@ def is_a_comment(line):
     :return:
     """
     line = "".join(line.split())  # clean white spaces
-    return line[0] == "//"
+    return line.startswith("//")
 
 
 def parse(line):
@@ -72,8 +94,8 @@ def parse(line):
         raise ValueError()
 
 def is_command(line):
-    return line and not line.isspace() and not is_a_comment(line)
-
+    flag = line and not line.isspace() and not is_a_comment(line)
+    return flag
 class ParsedLine:
     def __init__(self, original_line, command_type, arg1, arg2):
         """
