@@ -80,7 +80,7 @@ class Translator:
             line += PUSH_SEGMENT_POINTER+"\n"
         return line
 
-
+destination_path
     def translate_pop_command(self, parsed_line):
         segment = parsed_line.arg1
         index = parsed_line.arg2

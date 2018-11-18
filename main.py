@@ -9,6 +9,7 @@ OUTPUT_FILE_EXTENSION = ".asm"
 ILLEGAL_USAGE = "Wrong usage formatting"
 USAGE = "Usage: VMTranslator <file_path>"
 
+
 def get_input_and_destination_paths(file_path):
     paths = []
     if os.path.isdir(file_path):
@@ -21,9 +22,10 @@ def get_input_and_destination_paths(file_path):
         destination_path = os.path.abspath(os.path.join(file_path, os.pardir))
     return paths, destination_path
 
+
 def translate_file(path, destination_path):
     write_path = os.path.join(destination_path,
-                '.'.join(os.path.basename(path).split('.')[:-1]) + OUTPUT_FILE_EXTENSION)
+                              '.'.join(os.path.basename(path).split('.')[:-1]) + OUTPUT_FILE_EXTENSION)
     with open(path) as reader, open(write_path, 'w') as writer:
         file_name = "".join(ntpath.basename(path).split('.')[:-1])
         code_writer = CodeWriter(writer, file_name)
@@ -33,7 +35,6 @@ def translate_file(path, destination_path):
                 parsed_line = parser.parse(input_line)
                 code_writer.write_command(parsed_line)
             input_line = reader.readline()
-
 
 
 def main(input_path):
@@ -47,7 +48,6 @@ def main(input_path):
         translate_file(path, destination_path)
 
 
-
 if __name__ == "__main__":
     x = sys.argv
     if len(sys.argv) != 2:
@@ -55,5 +55,3 @@ if __name__ == "__main__":
     if not os.path.isdir(sys.argv[1]) and not os.path.isfile(sys.argv[1]):
         raise ValueError(ILLEGAL_USAGE + '\n' + USAGE)
     main(sys.argv[1])
-
-

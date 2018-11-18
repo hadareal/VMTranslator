@@ -1,8 +1,6 @@
-
 #  CONSTANTS:
 
 TEMP_START_INDEX = 5
-
 
 ADD = "ADD"
 SUB = "SUB"
@@ -14,7 +12,6 @@ AND = "AND"
 OR = "OR"
 NOT = "NOT"
 
-
 LOCAL = "local"
 ARGUMENT = "argument"
 THIS = "this"
@@ -24,13 +21,12 @@ CONSTANT = "constant"
 POINTER = "pointer"
 STATIC = "static"
 
-
 SEGMENTS = \
     {
         LOCAL: "LCL",
         ARGUMENT: "ARG",
-        THIS : "THIS",
-        THAT : "THAT",
+        THIS: "THIS",
+        THAT: "THAT",
     }
 
 PUSH_COMMAND = "PUSH_COMMAND"
@@ -42,7 +38,6 @@ C_IF = "C_IF"
 C_FUNCTION = "C_FUNCTION"
 C_RETURN = "C_RETURN"
 C_CALL = "C_CALL"
-
 
 ARITHMETIC_COMMANDS = \
     {
@@ -59,10 +54,24 @@ ARITHMETIC_COMMANDS = \
 
 MEMORY_ACCESS_COMMANDS = \
     {
-        "push" : PUSH_COMMAND,
-        "pop" : POP_COMMAND,
+        "push": PUSH_COMMAND,
+        "pop": POP_COMMAND,
     }
 
+PROGRAM_FLOW_COMMAND = \
+    {
+        "lable": C_LABEL,  # label declaration
+        "goto": C_GOTO,  # unconditional branching
+        "if-goto": C_IF  # conditional branching
+    }
+
+FUNCTION_CALLING_COMMANDS = \
+    {
+        "function": C_FUNCTION,
+        "call": C_CALL,
+        "return": C_RETURN
+
+    }
 
 
 def is_a_comment(line):
@@ -93,9 +102,12 @@ def parse(line):
     else:
         raise ValueError()
 
+
 def is_command(line):
     flag = line and not line.isspace() and not is_a_comment(line)
     return flag
+
+
 class ParsedLine:
     def __init__(self, original_line, command_type, arg1, arg2):
         """
